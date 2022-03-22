@@ -1,23 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="160dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:contentDescription="MainLogo"
+        app:srcCompat="@drawable/splash" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif"
+        android:text="WOMEN SAFETY APP"
+        android:textAlignment="center"
+        android:textSize="26sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/sosButton"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF0000"
+            android:padding="16dp"
+            android:text="SOS Alert"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/sirenButton"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FFA500"
+            android:padding="16dp"
+            android:text="Siren"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <Button
+            android:id="@+id/voiceRecordingButton"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#00ff00"
+            android:padding="16dp"
+            android:text="Voice Recording"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/helplineButton"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#c2b280"
+            android:padding="16dp"
+            android:text="Helpline Numbers"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <!-- Temp Button-->
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="32dp"
         android:background="@drawable/button"
-        android:text="Logout"
+        android:padding="16dp"
+        android:text="Temp Logout"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="18sp" />
+</LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -3,6 +3,7 @@
     package="com.example.womensafetyapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WomenSafetyApp">
+        <activity
+            android:name=".HelplineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VoiceRecordingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SirenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SOSActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
