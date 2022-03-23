@@ -8,7 +8,16 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_margin="16dp"
+        android:contentDescription="MainLogo"
+        app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+    <ImageView
+        android:id="@+id/main_logo"
         android:layout_width="160dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
@@ -17,7 +26,7 @@
         app:srcCompat="@drawable/splash" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

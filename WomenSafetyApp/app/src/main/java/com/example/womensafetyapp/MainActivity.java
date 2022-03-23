@@ -3,6 +3,7 @@ package com.example.womensafetyapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     Button sirenButton;
     Button voiceRecordingButton;
     Button helplineButton;
+    ImageView profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
         helplineButton.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, HelplineActivity.class));
+        });
+
+        //Click on Imageview profile to go to SOS activity
+        profile = findViewById(R.id.profile_image);
+        profile.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, ProfileDetails.class));
         });
     }
 }
