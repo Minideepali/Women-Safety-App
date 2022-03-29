@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.womensafetyapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/splash"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/splash"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WomenSafetyApp">
+        <activity
+            android:name=".ProfileDetails"
+            android:exported="false" />
+        <activity
+            android:name=".HelplineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VoiceRecordingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SirenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SOSActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+    </application>
+
+</manifest>
