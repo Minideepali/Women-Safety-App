@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         }) {
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<>();
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 return params;
             }
