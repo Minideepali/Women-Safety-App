@@ -2,13 +2,27 @@ package com.example.womensafetyapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.womensafetyapp.UtilsService.SharedPreferenceClass;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     Button Logout;
@@ -16,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Button sirenButton;
     Button voiceRecordingButton;
     Button helplineButton;
-    ImageView profile;
+    CircleImageView profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,5 +72,45 @@ public class MainActivity extends AppCompatActivity {
         profile.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, ProfileDetails.class));
         });
+        setProfileImage();
+    }
+
+    private void setProfileImage() {
+        SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(this);
+        String url = " https://women-safety-app-api.herokuapp.com/api/womenSafety/auth";
+        final String token = sharedPreferenceClass.getValue_string("token");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                if (response.getBoolean("success")) {
+                    JSONObject userObj = response.getJSONObject("user");
+
+                    Picasso.with(getApplicationContext())
+                            .load(userObj.getString("avatar"))
+                            .placeholder(R.drawable.ic_baseline_account_circle_24)
+                            .error(R.drawable.ic_baseline_account_circle_24)
+                            .into(profile);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            error.printStackTrace();
+            Toast.makeText(MainActivity.this, "Error " + error, Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", token);
+                return params;
+            }
+        };
+        int socketTimeout = 30000;
+        new DefaultRetryPolicy(socketTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 }
