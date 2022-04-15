@@ -3,7 +3,6 @@ package com.example.womensafetyapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,12 +84,11 @@ public class MainActivity extends AppCompatActivity {
                 if (response.getBoolean("success")) {
                     JSONObject userObj = response.getJSONObject("user");
 
-                    Picasso.with(getApplicationContext())
+                    Picasso.get()
                             .load(userObj.getString("avatar"))
                             .placeholder(R.drawable.ic_baseline_account_circle_24)
                             .error(R.drawable.ic_baseline_account_circle_24)
                             .into(profile);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

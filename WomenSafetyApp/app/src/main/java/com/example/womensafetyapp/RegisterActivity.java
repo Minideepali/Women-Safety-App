@@ -1,7 +1,5 @@
 package com.example.womensafetyapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -34,10 +34,16 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
     private EditText name_ET, email_ET, password_ET;
     ProgressBar progressBar;
-
-    private String name, email, password;
+    private static String email;
+    private String password;
     UtilService utilService;
     SharedPreferenceClass sharedPreferenceClass;
+    private String name;
+
+    public static String getEmail() {
+        return email;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

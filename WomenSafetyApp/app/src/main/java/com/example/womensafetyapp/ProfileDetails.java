@@ -1,16 +1,29 @@
 package com.example.womensafetyapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.womensafetyapp.UtilsService.SharedPreferenceClass;
@@ -19,6 +32,9 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +45,15 @@ public class ProfileDetails extends AppCompatActivity {
     private TextView user_name;
     private TextView user_email;
     private CircleImageView userImage;
+    Uri selectedImage;
+    String part_image;
+    private static final int PICK_IMAGE_REQUEST = 9544;
+    // Permissions for accessing the storage
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static final String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +75,7 @@ public class ProfileDetails extends AppCompatActivity {
                     user_name.setText(userObj.getString("username"));
                     user_email.setText(userObj.getString("email"));
 
-                    Picasso.with(getApplicationContext())
+                    Picasso.get()
                             .load(userObj.getString("avatar"))
                             .placeholder(R.drawable.ic_baseline_account_circle_24)
                             .error(R.drawable.ic_baseline_account_circle_24)
@@ -87,5 +112,114 @@ public class ProfileDetails extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        //Clicking User Avatar to run a function called UploadImage
+        userImage.setOnClickListener(view -> {
+            UploadImage();
+        });
+    }
+
+    private void UploadImage() {
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
+        verifyStoragePermissions(ProfileDetails.this);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Open Gallery"), PICK_IMAGE_REQUEST);
+    }
+
+    // Method to get the absolute path of the selected image from its URI
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                selectedImage = data.getData();                                                         // Get the image file URI
+                String[] imageProjection = {MediaStore.Images.Media.DATA};
+                try (Cursor cursor = getContentResolver().query(selectedImage, imageProjection, null, null, null)) {
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int indexImage = cursor.getColumnIndex(imageProjection[0]);
+                        part_image = cursor.getString(indexImage);                                          // Get the image file absolute path
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        userImage.setImageBitmap(bitmap);
+
+                        ByteArrayOutputStream baOS = new ByteArrayOutputStream();
+                        if (bitmap != null) {
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baOS); // bm is the bitmap object
+                        }
+                        byte[] b = baOS.toByteArray();
+                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                        //uploadImageToServer(RegisterActivity.getEmail(), encodedImage);
+                    }
+                }
+            }
+        }
+    }
+
+    private void uploadImageToServer(String email, String avatar) {
+        final HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("avatar", avatar);
+
+        String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/uploadImage";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                apiKey, new JSONObject(params), response -> {
+            try {
+                if (response.getBoolean("success")) {
+                    Toast.makeText(this, "Avatar Changed", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+
+            NetworkResponse response = error.networkResponse;
+            if (error instanceof ServerError && response != null) {
+                try {
+                    String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                    JSONObject obj = new JSONObject(res);
+                    Toast.makeText(this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
+                } catch (JSONException | UnsupportedEncodingException je) {
+                    je.printStackTrace();
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+
+        // set retry policy
+        int socketTime = 3000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTime,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
+
+        // request add
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 }
