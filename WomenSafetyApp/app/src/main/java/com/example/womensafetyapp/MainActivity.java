@@ -50,27 +50,17 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
-        sosButton.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, SOSActivity.class));
-        });
+        sosButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SOSActivity.class)));
 
-        sirenButton.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, SirenActivity.class));
-        });
+        sirenButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SirenActivity.class)));
 
-        voiceRecordingButton.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, VoiceRecordingActivity.class));
-        });
+        voiceRecordingButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, VoiceRecordingActivity.class)));
 
-        helplineButton.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, HelplineActivity.class));
-        });
+        helplineButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, HelplineActivity.class)));
 
         //Click on Imageview profile to go to SOS activity
         profile = findViewById(R.id.profile_image);
-        profile.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, ProfileDetails.class));
-        });
+        profile.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileDetails.class)));
         setProfileImage();
     }
 
