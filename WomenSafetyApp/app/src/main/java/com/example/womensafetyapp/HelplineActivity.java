@@ -40,7 +40,6 @@ public class HelplineActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_CALL);
             Toast.makeText(this, selectedNumber, Toast.LENGTH_SHORT).show();
             intent.setData(android.net.Uri.parse("tel:" + selectedNumber));
-            //startActivity(intent);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);
             } else {
