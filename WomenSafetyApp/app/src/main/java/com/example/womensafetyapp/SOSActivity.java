@@ -22,11 +22,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.womensafetyapp.UtilsService.SharedPreferenceClass;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SOSActivity extends AppCompatActivity {
     public int counter;
@@ -37,6 +49,9 @@ public class SOSActivity extends AppCompatActivity {
     // FusedLocationProviderClient
     // object
     FusedLocationProviderClient mFusedLocationClient;
+    String guardian_name;
+    String guardian_phone;
+    CountDownTimer countDownTimer;
 
     // Initializing other items
     // from layout file
@@ -74,24 +89,15 @@ public class SOSActivity extends AppCompatActivity {
         stop_btn.setOnClickListener(v -> {
             Intent intent = new Intent(SOSActivity.this, MainActivity.class);
             startActivity(intent);
+            countDownTimer.cancel();
+            finish();
         });
         send.setOnClickListener(view -> {
-            String message = "SOS! I am in danger. My location is: http://www.google.com/maps/place/" + Latitude + "," + Longitude;
-            sendSMS(message);
-            stop_btn.setVisibility(View.VISIBLE);
-            new CountDownTimer(30000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    countdownTextView.setText(String.valueOf(counter));
-                    counter++;
-                }
-
-                @SuppressLint("SetTextI18n")
-                public void onFinish() {
-                    countdownTextView.setText("FINISH!!");
+                    String message = "SOS! I am in danger. My location is: http://www.google.com/maps/place/" + Latitude + "," + Longitude;
+                    getGuardianDetails();
                     sendSMS(message);
                 }
-            }.start();
-        });
+        );
     }
 
     @SuppressLint({"MissingPermission", "SetTextI18n"})
@@ -133,9 +139,24 @@ public class SOSActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
         } else {
-            try {
-                //#TODO: Add guardian phone number
-                String guardianNumber = "+91-1234567892";
+            try {   // send sms
+                countDownTimer = new CountDownTimer(30000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        countdownTextView.setText(String.valueOf(counter));
+                        counter++;
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    public void onFinish() {
+                        countdownTextView.setText("FINISH!!");
+                        sendSMS(message);
+                    }
+                };
+                countDownTimer.start();
+                String guardianNumber = guardian_phone;
+                Toast.makeText(this, guardianNumber, Toast.LENGTH_SHORT).show();
+                Button stop_btn = findViewById(R.id.stop_btn);
+                stop_btn.setVisibility(View.VISIBLE);
                 try {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(guardianNumber, null, message, null, null);
@@ -148,6 +169,7 @@ public class SOSActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_LONG).show();
             }
         }
+
     }
 
 
@@ -211,5 +233,39 @@ public class SOSActivity extends AppCompatActivity {
         if (checkPermissions()) {
             getLastLocation();
         }
+    }
+
+    private void getGuardianDetails() {
+        String url = " https://add-guardians.herokuapp.com/api/womenSafety/auth";
+        SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(getApplicationContext());
+        final String guardian_token = sharedPreferenceClass.getValue_string("guardian_token");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                if (response.getBoolean("success")) {
+                    JSONObject userObj = response.getJSONObject("user");
+                    guardian_name = userObj.getString("name");
+                    guardian_phone = userObj.getString("phone");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            error.printStackTrace();
+            Toast.makeText(this, "Error " + error, Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", guardian_token);
+                return params;
+            }
+        };
+        int socketTimeout = 30000;
+        new DefaultRetryPolicy(socketTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 }
