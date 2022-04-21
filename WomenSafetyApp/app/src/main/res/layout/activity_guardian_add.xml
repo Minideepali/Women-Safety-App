@@ -20,24 +20,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:autofillHints="Name"
         android:hint="Name"
         android:inputType="text"
         android:textSize="20sp"
         android:textStyle="bold"
-        tools:ignore="HardcodedText"
-        android:autofillHints="Name" />
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:autofillHints="Phone"
         android:hint="Phone"
         android:inputType="phone"
         android:textSize="20sp"
         android:textStyle="bold"
-        tools:ignore="HardcodedText"
-        android:autofillHints="Phone" />
+        tools:ignore="HardcodedText" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/add_button"
