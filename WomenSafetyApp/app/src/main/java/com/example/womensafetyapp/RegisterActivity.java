@@ -65,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
             name = name_ET.getText().toString();
             email = email_ET.getText().toString();
             userInfo.setEmail(email_ET.getText().toString());
+            UserInfo.setName(name_ET.getText().toString());
             Toast.makeText(this, UserInfo.getEmail(), Toast.LENGTH_SHORT).show();
             password = password_ET.getText().toString();
             if (validate(view)) {

@@ -18,7 +18,13 @@
             android:backgroundTint="@color/red"
             android:text="@string/sos_alert_button_text" />
     </RelativeLayout>
-
+    <Button
+        android:id="@+id/stop_btn"
+        android:layout_width="1000dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/red"
+        android:text="STOP" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,5 +52,12 @@
         android:text="@string/loading"
         android:textColor="@color/black" />
 
+    <TextView
+        android:id="@+id/countdownTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Countdown"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="15sp" />
 
 </LinearLayout>

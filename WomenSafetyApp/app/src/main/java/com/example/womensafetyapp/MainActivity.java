@@ -24,7 +24,6 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
-    Button Logout;
     Button sosButton;
     Button sirenButton;
     Button voiceRecordingButton;
@@ -36,19 +35,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Logout = findViewById(R.id.logout);
         sosButton = findViewById(R.id.sosButton);
         sirenButton = findViewById(R.id.sirenButton);
         voiceRecordingButton = findViewById(R.id.voiceRecordingButton);
         helplineButton = findViewById(R.id.helplineButton);
 
         SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(this);
-
-        Logout.setOnClickListener(view -> {
-            sharedPreferenceClass.clear();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        });
 
         sosButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SOSActivity.class)));
 

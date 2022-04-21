@@ -57,6 +57,8 @@ public class GuardianAdd extends AppCompatActivity {
         params.put("name", name);
         params.put("email", email);
         params.put("phone", phone);
+        UserInfo.setGuardian_name(name);
+        UserInfo.setGuardian_phone(phone);
         Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, phone, Toast.LENGTH_SHORT).show();
         String apiKey = "https://add-guardians.herokuapp.com/api/womenSafety/auth/add";

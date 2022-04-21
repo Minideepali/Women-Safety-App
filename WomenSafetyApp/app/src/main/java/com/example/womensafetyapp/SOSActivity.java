@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.provider.Settings;
 import android.telephony.SmsManager;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 public class SOSActivity extends AppCompatActivity {
+    public int counter;
+    TextView countdownTextView;
     String Latitude;
     String Longitude;
     // initializing
@@ -37,7 +41,6 @@ public class SOSActivity extends AppCompatActivity {
     // Initializing other items
     // from layout file
     TextView latitudeTextView, longitTextView;
-    int PERMISSION_ID = 44;
     private final LocationCallback mLocationCallback = new LocationCallback() {
 
         @SuppressLint("SetTextI18n")
@@ -50,6 +53,7 @@ public class SOSActivity extends AppCompatActivity {
             Longitude = mLastLocation.getLongitude() + "";
         }
     };
+    int PERMISSION_ID = 44;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +62,35 @@ public class SOSActivity extends AppCompatActivity {
 
         latitudeTextView = findViewById(R.id.latTextView);
         longitTextView = findViewById(R.id.lonTextView);
-
+        countdownTextView = findViewById(R.id.countdownTextView);
+        Button stop_btn = findViewById(R.id.stop_btn);
+        stop_btn.setVisibility(View.INVISIBLE);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // method to get the location
         getLastLocation();
         Button send;
         send = findViewById(R.id.sosButton);
+        stop_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(SOSActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
         send.setOnClickListener(view -> {
             String message = "SOS! I am in danger. My location is: http://www.google.com/maps/place/" + Latitude + "," + Longitude;
             sendSMS(message);
+            stop_btn.setVisibility(View.VISIBLE);
+            new CountDownTimer(30000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    countdownTextView.setText(String.valueOf(counter));
+                    counter++;
+                }
+
+                @SuppressLint("SetTextI18n")
+                public void onFinish() {
+                    countdownTextView.setText("FINISH!!");
+                    sendSMS(message);
+                }
+            }.start();
         });
     }
 
@@ -107,7 +130,6 @@ public class SOSActivity extends AppCompatActivity {
     }
 
     private void sendSMS(String message) {
-        Toast.makeText(this, "Trying to send SOS message...", Toast.LENGTH_SHORT).show();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
         } else {
@@ -117,6 +139,7 @@ public class SOSActivity extends AppCompatActivity {
                 try {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(guardianNumber, null, message, null, null);
+                    Toast.makeText(this, "Trying to send SOS message...", Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_LONG).show();
