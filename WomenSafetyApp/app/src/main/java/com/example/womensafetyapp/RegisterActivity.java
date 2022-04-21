@@ -32,18 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText name_ET, email_ET, password_ET;
+    UserInfo userInfo;
     ProgressBar progressBar;
-    private static String email;
-    private String password;
     UtilService utilService;
     SharedPreferenceClass sharedPreferenceClass;
+    private EditText name_ET, email_ET, password_ET;
+    private String email;
+    private String password;
     private String name;
-
-    public static String getEmail() {
-        return email;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
         final HashMap<String, String> params = new HashMap<>();
         params.put("username", name);
         params.put("email", email);
+        userInfo.setEmail(email);
         params.put("password", password);
 
         String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/register";
