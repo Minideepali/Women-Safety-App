@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WomenSafetyApp">
         <activity
+            android:name=".GuardianAdd"
+            android:exported="false" />
+        <activity
             android:name=".ProfileDetails"
             android:exported="false" />
         <activity

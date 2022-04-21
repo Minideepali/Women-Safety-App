@@ -1,13 +1,13 @@
 package com.example.womensafetyapp;
 
 public class UserInfo {
-    private String email;
+    private static String email;
 
-    public String getEmail() {
+    public static String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        UserInfo.email = email;
     }
 }

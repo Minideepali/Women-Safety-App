@@ -4,37 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddGuardian">
+    tools:context=".GuardianAdd">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:padding="8dp"
-        android:text="Add Guardian"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Add your Guardian"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <EditText
-        android:id="@+id/guardian_name"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:padding="8dp"
-        android:text="Name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:hint="Name"
+        android:inputType="text"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText"
+        android:autofillHints="Name" />
 
     <EditText
-        android:id="@+id/guardian_phone"
+        android:id="@+id/phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:padding="8dp"
-        android:text="Phone"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:hint="Phone"
+        android:inputType="phone"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText"
+        android:autofillHints="Phone" />
 
     <Button
+        android:id="@+id/add_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Add Guardian" />
+        android:text="Add Guardian"
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
+
 </LinearLayout>

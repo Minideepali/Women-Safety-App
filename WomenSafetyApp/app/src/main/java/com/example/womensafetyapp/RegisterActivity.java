@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
-    UserInfo userInfo;
+    UserInfo userInfo = new UserInfo();
     ProgressBar progressBar;
     UtilService utilService;
     SharedPreferenceClass sharedPreferenceClass;
@@ -64,6 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
             utilService.hideKeyboard(view, RegisterActivity.this);
             name = name_ET.getText().toString();
             email = email_ET.getText().toString();
+            userInfo.setEmail(email_ET.getText().toString());
+            Toast.makeText(this, UserInfo.getEmail(), Toast.LENGTH_SHORT).show();
             password = password_ET.getText().toString();
             if (validate(view)) {
                 registerUser();
@@ -77,7 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
         final HashMap<String, String> params = new HashMap<>();
         params.put("username", name);
         params.put("email", email);
-        userInfo.setEmail(email);
         params.put("password", password);
 
         String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/register";
@@ -88,8 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (response.getBoolean("success")) {
                     String token = response.getString("token");
                     sharedPreferenceClass.setValue_string("token", token);
-                    Toast.makeText(RegisterActivity.this, token, Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                    Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, GuardianAdd.class));
                 }
                 progressBar.setVisibility(View.GONE);
             } catch (JSONException e) {
