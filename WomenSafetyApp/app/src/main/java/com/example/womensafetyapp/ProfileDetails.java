@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,12 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
-import com.android.volley.ServerError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.womensafetyapp.UtilsService.SharedPreferenceClass;
@@ -34,19 +29,12 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileDetails extends AppCompatActivity {
-    SharedPreferenceClass sharedPreferenceClass;
-    private TextView user_name;
-    private TextView user_email;
-    private CircleImageView userImage;
-    Uri selectedImage;
-    String part_image;
     private static final int PICK_IMAGE_REQUEST = 9544;
     // Permissions for accessing the storage
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -54,6 +42,26 @@ public class ProfileDetails extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    SharedPreferenceClass sharedPreferenceClass;
+    Uri selectedImage;
+    String part_image;
+    private TextView user_name;
+    private TextView user_email;
+    private CircleImageView userImage;
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +110,7 @@ public class ProfileDetails extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
+        getGuardianDetails();
         SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(this);
 
         logout.setOnClickListener(view -> {
@@ -116,6 +125,41 @@ public class ProfileDetails extends AppCompatActivity {
         userImage.setOnClickListener(view -> {
             UploadImage();
         });
+    }
+
+    private void getGuardianDetails() {
+        TextView guardian_name = findViewById(R.id.guardian_name);
+        TextView guardian_phone = findViewById(R.id.guardian_phone);
+        String url = " https://add-guardians.herokuapp.com/api/womenSafety/auth";
+        final String guardian_token = sharedPreferenceClass.getValue_string("guardian_token");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                if (response.getBoolean("success")) {
+                    JSONObject userObj = response.getJSONObject("user");
+                    guardian_name.setText(userObj.getString("name"));
+                    guardian_phone.setText(userObj.getString("phone"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            error.printStackTrace();
+            Toast.makeText(ProfileDetails.this, "Error " + error, Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", guardian_token);
+                return params;
+            }
+        };
+        int socketTimeout = 30000;
+        new DefaultRetryPolicy(socketTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void UploadImage() {
@@ -151,75 +195,10 @@ public class ProfileDetails extends AppCompatActivity {
                         if (bitmap != null) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baOS); // bm is the bitmap object
                         }
-                        byte[] b = baOS.toByteArray();
-                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        //uploadImageToServer(RegisterActivity.getEmail(), encodedImage);
                     }
                 }
             }
-        }
-    }
-
-    private void uploadImageToServer(String email, String avatar) {
-        final HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("avatar", avatar);
-
-        String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/uploadImage";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
-                apiKey, new JSONObject(params), response -> {
-            try {
-                if (response.getBoolean("success")) {
-                    Toast.makeText(this, "Avatar Changed", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-
-            NetworkResponse response = error.networkResponse;
-            if (error instanceof ServerError && response != null) {
-                try {
-                    String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                    JSONObject obj = new JSONObject(res);
-                    Toast.makeText(this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
-                } catch (JSONException | UnsupportedEncodingException je) {
-                    je.printStackTrace();
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                return params;
-            }
-        };
-
-        // set retry policy
-        int socketTime = 3000;
-        RetryPolicy policy = new DefaultRetryPolicy(socketTime,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        jsonObjectRequest.setRetryPolicy(policy);
-
-        // request add
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(jsonObjectRequest);
-    }
-
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
         }
     }
 }

@@ -19,6 +19,7 @@ import com.android.volley.ServerError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.womensafetyapp.UtilsService.SharedPreferenceClass;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,8 @@ public class GuardianAdd extends AppCompatActivity {
             try {
                 if (response.getBoolean("success")) {
                     String token = response.getString("token");
+                    SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(this);
+                    sharedPreferenceClass.setValue_string("guardian_token", token);
                     Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, MainActivity.class));
                 }
