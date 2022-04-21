@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical|end"
         android:layout_margin="16dp"
         android:contentDescription="MainLogo"
-        app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+        android:src="@drawable/ic_baseline_account_circle_24" />
 
     <ImageView
         android:id="@+id/main_logo"

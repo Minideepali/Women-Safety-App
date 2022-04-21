@@ -40,23 +40,24 @@ public class GuardianAdd extends AppCompatActivity {
         Toast.makeText(this, UserInfo.getEmail(), Toast.LENGTH_SHORT).show();
         Button add_button = findViewById(R.id.add_button);
         EditText name_ET = findViewById(R.id.name);
-        name = name_ET.getText().toString();
         EditText phone_ET = findViewById(R.id.phone);
-        email = UserInfo.getEmail();
-        phone = phone_ET.getText().toString();
+
         progressBar = findViewById(R.id.progress_bar);
         add_button.setOnClickListener(v -> {
-            AddGuardian();
-            Toast.makeText(this, "Guardian added", Toast.LENGTH_SHORT).show();
+            name = name_ET.getText().toString();
+            email = UserInfo.getEmail();
+            phone = phone_ET.getText().toString();
+            AddGuardianOne();
         });
     }
 
-    private void AddGuardian() {
+    void AddGuardianOne() {
         final HashMap<String, String> params = new HashMap<>();
         params.put("name", name);
-        params.put("phone", phone);
         params.put("email", email);
-
+        params.put("phone", phone);
+        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, phone, Toast.LENGTH_SHORT).show();
         String apiKey = "https://add-guardians.herokuapp.com/api/womenSafety/auth/add";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,

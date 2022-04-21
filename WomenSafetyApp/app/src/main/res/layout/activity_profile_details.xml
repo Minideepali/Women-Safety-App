@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,7 +13,8 @@
         android:layout_gravity="center"
         android:layout_margin="16dp"
         android:contentDescription="User Avatar"
-        android:src="@drawable/ic_baseline_account_circle_24" />
+        android:src="@drawable/ic_baseline_account_circle_24"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/username"
@@ -21,7 +23,8 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"
         android:text="SampleUserName"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/user_email"
@@ -31,7 +34,8 @@
         android:layout_marginBottom="16dp"
         android:padding="4dp"
         android:text="SampleUserEmail"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/guardian_1"
@@ -39,61 +43,33 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="SamplePerson1"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/guardian_1_name"
+        android:id="@+id/guardian_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="SamplePerson1Name"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/guardian_1_phone"
+        android:id="@+id/guardian_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:padding="8dp"
         android:text="SamplePerson1Phone"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/guardian_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="SamplePerson1"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/guardian_2_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="SamplePerson1Name"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/guardian_2_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:padding="8dp"
-        android:text="SamplePerson1Phone"
-        android:textSize="14sp" />
-
-    <Button
-        android:id="@+id/edit_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Edit Profile" />
+        android:textSize="14sp"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Logout" />
+        android:text="Logout"
+        tools:ignore="HardcodedText" />
 </LinearLayout>
