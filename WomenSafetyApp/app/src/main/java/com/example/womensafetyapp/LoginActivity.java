@@ -1,7 +1,5 @@
 package com.example.womensafetyapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -33,12 +33,11 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText email_ET, password_ET;
     ProgressBar progressBar;
-
-    private String email, password;
     UtilService utilService;
     SharedPreferenceClass sharedPreferenceClass;
+    private EditText email_ET, password_ET;
+    private String email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             password = password_ET.getText().toString();
             if (validate(view)) {
                 loginUser();
+                getGuardianDetails();
             }
         });
     }
@@ -85,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.getBoolean("success")) {
                     String token = response.getString("token");
                     sharedPreferenceClass.setValue_string("token", token);
-                    sharedPreferenceClass.setValue_string("guardian_token", token);
                     Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -145,6 +144,62 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return isValid;
+    }
+
+    private void getGuardianDetails() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        final HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        String apiKey = "https://add-guardians.herokuapp.com/api/womenSafety/auth/retrieve";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                apiKey, new JSONObject(params), response -> {
+            try {
+                if (response.getBoolean("success")) {
+                    String token = response.getString("guardian_token");
+                    sharedPreferenceClass.setValue_string("guardian_token", token);
+                    Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
+                progressBar.setVisibility(View.GONE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                progressBar.setVisibility(View.GONE);
+            }
+        }, error -> {
+
+            NetworkResponse response = error.networkResponse;
+            if (error instanceof ServerError && response != null) {
+                try {
+                    String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                    JSONObject obj = new JSONObject(res);
+                    Toast.makeText(LoginActivity.this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                } catch (JSONException | UnsupportedEncodingException je) {
+                    je.printStackTrace();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+
+        // set retry policy
+        int socketTime = 3000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTime,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
+
+        // request add
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 
     @Override

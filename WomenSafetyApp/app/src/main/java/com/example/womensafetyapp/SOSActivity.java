@@ -94,7 +94,20 @@ public class SOSActivity extends AppCompatActivity {
         });
         send.setOnClickListener(view -> {
                     String message = "SOS! I am in danger. My location is: http://www.google.com/maps/place/" + Latitude + "," + Longitude;
-                    getGuardianDetails();
+                    CountDownTimer countDownTimer1;
+                    countDownTimer1 = new CountDownTimer(20000, 1000) {
+                        public void onTick(long millisUntilFinished) {
+                            countdownTextView.setText(String.valueOf(counter));
+                            counter++;
+                        }
+
+                        @SuppressLint("SetTextI18n")
+                        public void onFinish() {
+                            countdownTextView.setText("FINISH!!");
+                            getGuardianDetails();
+                        }
+                    };
+                    countDownTimer1.start();
                     sendSMS(message);
                 }
         );
@@ -140,7 +153,7 @@ public class SOSActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
         } else {
             try {   // send sms
-                countDownTimer = new CountDownTimer(30000, 1000) {
+                countDownTimer = new CountDownTimer(180000, 1000) {
                     public void onTick(long millisUntilFinished) {
                         countdownTextView.setText(String.valueOf(counter));
                         counter++;
