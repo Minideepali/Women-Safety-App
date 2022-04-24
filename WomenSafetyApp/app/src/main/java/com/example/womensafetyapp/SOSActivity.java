@@ -167,7 +167,6 @@ public class SOSActivity extends AppCompatActivity {
                 };
                 countDownTimer.start();
                 String guardianNumber = guardian_phone;
-                Toast.makeText(this, guardianNumber, Toast.LENGTH_SHORT).show();
                 Button stop_btn = findViewById(R.id.stop_btn);
                 stop_btn.setVisibility(View.VISIBLE);
                 try {
@@ -175,11 +174,9 @@ public class SOSActivity extends AppCompatActivity {
                     smsManager.sendTextMessage(guardianNumber, null, message, null, null);
                     Toast.makeText(this, "Trying to send SOS message...", Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_LONG).show();
+                } catch (Exception ignored) {
                 }
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_LONG).show();
+            } catch (Exception ignored) {
             }
         }
 
@@ -263,10 +260,7 @@ public class SOSActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> {
-            error.printStackTrace();
-            Toast.makeText(this, "Error " + error, Toast.LENGTH_SHORT).show();
-        }) {
+        }, Throwable::printStackTrace) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();

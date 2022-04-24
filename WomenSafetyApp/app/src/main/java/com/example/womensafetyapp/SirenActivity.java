@@ -38,7 +38,7 @@ public class SirenActivity extends AppCompatActivity {
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            Toast.makeText(this, "MediaPlayer released", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Siren Stopped", Toast.LENGTH_SHORT).show();
         }
     }
 

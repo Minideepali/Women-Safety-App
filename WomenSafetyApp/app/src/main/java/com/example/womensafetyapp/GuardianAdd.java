@@ -38,7 +38,6 @@ public class GuardianAdd extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guardian_add);
-        Toast.makeText(this, UserInfo.getEmail(), Toast.LENGTH_SHORT).show();
         Button add_button = findViewById(R.id.add_button);
         EditText name_ET = findViewById(R.id.name);
         EditText phone_ET = findViewById(R.id.phone);
@@ -59,10 +58,8 @@ public class GuardianAdd extends AppCompatActivity {
         params.put("phone", phone);
         UserInfo.setGuardian_name(name);
         UserInfo.setGuardian_phone(phone);
-        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, phone, Toast.LENGTH_SHORT).show();
         String apiKey = "https://add-guardians.herokuapp.com/api/womenSafety/auth/add";
-
+        Toast.makeText(this, "Guardian Added Successfully", Toast.LENGTH_SHORT).show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 apiKey, new JSONObject(params), response -> {
             try {
@@ -70,7 +67,6 @@ public class GuardianAdd extends AppCompatActivity {
                     String token = response.getString("token");
                     SharedPreferenceClass sharedPreferenceClass = new SharedPreferenceClass(this);
                     sharedPreferenceClass.setValue_string("guardian_token", token);
-                    Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, MainActivity.class));
                 }
                 progressBar.setVisibility(View.GONE);
@@ -86,7 +82,6 @@ public class GuardianAdd extends AppCompatActivity {
                     String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
 
                     JSONObject obj = new JSONObject(res);
-                    Toast.makeText(getApplicationContext(), obj.getString("msg"), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException | UnsupportedEncodingException je) {
                     je.printStackTrace();

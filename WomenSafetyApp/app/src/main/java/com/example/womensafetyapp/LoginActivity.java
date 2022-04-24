@@ -78,14 +78,13 @@ public class LoginActivity extends AppCompatActivity {
         params.put("password", password);
 
         String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/login";
-
+        Toast.makeText(this, "Logging In....", Toast.LENGTH_SHORT).show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 apiKey, new JSONObject(params), response -> {
             try {
                 if (response.getBoolean("success")) {
                     String token = response.getString("token");
                     sharedPreferenceClass.setValue_string("token", token);
-                    Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
@@ -101,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                     JSONObject obj = new JSONObject(res);
-                    Toast.makeText(LoginActivity.this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException | UnsupportedEncodingException je) {
                     je.printStackTrace();
@@ -160,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.getBoolean("success")) {
                     String token = response.getString("guardian_token");
                     sharedPreferenceClass.setValue_string("guardian_token", token);
-                    Toast.makeText(LoginActivity.this, token, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
                 progressBar.setVisibility(View.GONE);
@@ -175,7 +172,6 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                     JSONObject obj = new JSONObject(res);
-                    Toast.makeText(LoginActivity.this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException | UnsupportedEncodingException je) {
                     je.printStackTrace();

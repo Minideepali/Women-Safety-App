@@ -93,10 +93,7 @@ public class ProfileDetails extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> {
-            error.printStackTrace();
-            Toast.makeText(ProfileDetails.this, "Error " + error, Toast.LENGTH_SHORT).show();
-        }) {
+        }, Throwable::printStackTrace) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
@@ -122,9 +119,7 @@ public class ProfileDetails extends AppCompatActivity {
             finish();
         });
         //Clicking User Avatar to run a function called UploadImage
-        userImage.setOnClickListener(view -> {
-            UploadImage();
-        });
+        userImage.setOnClickListener(view -> UploadImage());
     }
 
     private void getGuardianDetails() {

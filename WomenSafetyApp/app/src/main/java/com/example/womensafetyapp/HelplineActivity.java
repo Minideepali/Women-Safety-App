@@ -38,13 +38,13 @@ public class HelplineActivity extends AppCompatActivity {
             String selectedNumber = arrayList.get(position).getEmergency_contact_number();
             //Intent for calling selected number
             Intent intent = new Intent(Intent.ACTION_CALL);
-            Toast.makeText(this, selectedNumber, Toast.LENGTH_SHORT).show();
             intent.setData(android.net.Uri.parse("tel:" + selectedNumber));
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Waiting for Permission", Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);
             } else {
-
                 try {
+                    Toast.makeText(this, "Calling...", Toast.LENGTH_SHORT).show();
                     startActivity(intent);
                 } catch (SecurityException e) {
                     e.printStackTrace();

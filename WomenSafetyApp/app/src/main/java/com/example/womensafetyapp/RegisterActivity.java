@@ -83,14 +83,13 @@ public class RegisterActivity extends AppCompatActivity {
         params.put("password", password);
 
         String apiKey = "https://women-safety-app-api.herokuapp.com/api/womenSafety/auth/register";
-
+        Toast.makeText(this, "Registering...", Toast.LENGTH_SHORT).show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 apiKey, new JSONObject(params), response -> {
             try {
                 if (response.getBoolean("success")) {
                     String token = response.getString("token");
                     sharedPreferenceClass.setValue_string("token", token);
-                    Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, GuardianAdd.class));
                 }
                 progressBar.setVisibility(View.GONE);
@@ -106,7 +105,6 @@ public class RegisterActivity extends AppCompatActivity {
                     String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
 
                     JSONObject obj = new JSONObject(res);
-                    Toast.makeText(RegisterActivity.this, obj.getString("msg"), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException | UnsupportedEncodingException je) {
                     je.printStackTrace();

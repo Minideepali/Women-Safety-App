@@ -3,7 +3,6 @@ package com.example.womensafetyapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -75,10 +74,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> {
-            error.printStackTrace();
-            Toast.makeText(MainActivity.this, "Error " + error, Toast.LENGTH_SHORT).show();
-        }) {
+        }, Throwable::printStackTrace) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
